@@ -1,0 +1,35 @@
+vierta((N,M),(M1,M),M1,_,"llene el primer contenedor") :- N < M1.
+vierta((N,M),(N,M2),_,M2,"llene el segundo contenedor") :- M < M2.
+vierta((N,M),(0,V),_,M2,"vierta el primero en el segundo") :-
+    N > 0,
+    V is N+M,
+    V =< M2.
+vierta((N,M),(V,M2),_,M2,"vierta lo que pueda del primero al segundo") :-
+    M < M2,
+    Total is N+M,
+    Total > M2,
+    V is Total - M2.
+vierta((N,M),(V,0),M1,_,"vierta el contenido del segundo en el primero") :-
+    M > 0,
+    V is N+M,
+    V =< M1.
+vierta((N,M),(M1,V),M1,_,"vierta lo que pueda del segundo al primero") :-
+    N < M1,
+    Total is N+M,
+    Total > M1,
+    V is Total-M1.
+vierta((N,M),(0,M),_,_,"vacie el primer contenedor") :- N > 0.
+vierta((N,M),(N,0),_,_,"vacie el segundo contenendor") :- M > 0.
+
+resuelva(Max1,Max2,Estados,Acciones) :-
+    resuelva((0,0),Max1,Max2,[],[],Estados,Acciones).
+
+resuelva((1,N),_,_,Estados,Acciones,RE,RA) :-
+    !,
+    reverse([(1,N)|Estados],RE),
+    reverse(Acciones,RA).
+resuelva(Estado,M1,M2,HE,HA,Estados,Acciones) :-
+    vierta(Estado,E1,M1,M2,Accion),
+    \+ member(E1,HE),
+    resuelva(E1,M1,M2,[Estado|HE],[Accion|HA],Estados,Acciones).
+
